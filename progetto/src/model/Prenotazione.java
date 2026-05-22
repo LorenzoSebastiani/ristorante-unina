@@ -12,13 +12,15 @@ public class Prenotazione {
     private LocalTime ora_fine;
     private int numero_persone;
     private StatoPrenotazione stato;
+    private Tavolo tavolo;
 
-    public Prenotazione (LocalDate data, LocalTime ora_inizio, LocalTime ora_fine, int numero_persone) {
+    public Prenotazione (LocalDate data, LocalTime ora_inizio, LocalTime ora_fine, int numero_persone, Tavolo tavolo) {
         this.data = data;
         this.ora_inizio = ora_inizio;
         this.ora_fine = ora_fine;
         this.numero_persone = numero_persone;
         this.stato = StatoPrenotazione.COMPLETATA;
+        this.tavolo = tavolo;
     }
 
     public Prenotazione (){}
@@ -45,6 +47,10 @@ public class Prenotazione {
 
     public StatoPrenotazione getStato() {
         return stato;
+    }
+
+    public Tavolo getTavolo() {
+        return tavolo;
     }
 
     public void conferma(){

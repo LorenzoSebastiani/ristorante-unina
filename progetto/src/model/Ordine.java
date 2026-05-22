@@ -13,11 +13,11 @@ public class Ordine {
     private StatoOrdine stato;
     private ArrayList<RigaOrdine> righe_ordine;
 
-    public Ordine(LocalDateTime data_ora, BigDecimal totale, ArrayList<RigaOrdine> righe_ordine){
+    public Ordine(LocalDateTime data_ora){
         this.data_ora = data_ora;
-        this.totale = totale;
+        this.totale = BigDecimal.valueOf(0);
         this.stato = StatoOrdine.APERTO;
-        this.righe_ordine = righe_ordine;
+        this.righe_ordine = new ArrayList<RigaOrdine>();
     }
 
     public Ordine () {}
