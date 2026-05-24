@@ -23,7 +23,25 @@ public class Controller {
         this.prenotazioni = new ArrayList<Prenotazione>();
         this.ordini = new ArrayList<Ordine>();
         this.piatti = new ArrayList<Piatto>();
+
+        tavoli.add(new Tavolo(1, 2, "interno"));
+        tavoli.add(new Tavolo(2, 4, "interno"));
+        tavoli.add(new Tavolo(3, 6, "esterno"));
+        tavoli.add(new Tavolo(4, 4, "esterno"));
+
+
+        piatti.add(new PiattoFisso("Carbonara", "Pasta con guanciale e pecorino", new BigDecimal("8.50"), "Primo"));
+        piatti.add(new PiattoFisso("Bistecca alla griglia", "Taglio pregiato con contorno", new BigDecimal("14.00"), "Secondo"));
+        piatti.add(new PiattoFisso("Tiramisu", "Dolce al mascarpone e caffe", new BigDecimal("4.50"), "Dolce"));
+
+        piatti.add(new PiattoDelGiorno("Risotto ai funghi", "Risotto con porcini freschi", new BigDecimal("9.00"), "Primo", 5, LocalDate.now()));
+        piatti.add(new PiattoDelGiorno("Branzino al forno", "Con verdure di stagione", new BigDecimal("12.00"), "Secondo", 3, LocalDate.now()));
+
+        clienti.add(new Cliente("Mario", "Rossi", "3331234567", "mario.rossi@email.it"));
+        clienti.add(new Cliente("Giulia", "Bianchi", "3479876543", "giulia.bianchi@email.it"));
     }
+
+
 
     // METODI CLIENTE
     public void aggiungiCliente(String nome, String cognome, String telefono, String email){
