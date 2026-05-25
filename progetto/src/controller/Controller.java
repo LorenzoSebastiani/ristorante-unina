@@ -39,6 +39,29 @@ public class Controller {
 
         clienti.add(new Cliente("Mario", "Rossi", "3331234567", "mario.rossi@email.it"));
         clienti.add(new Cliente("Giulia", "Bianchi", "3479876543", "giulia.bianchi@email.it"));
+
+        // recupera i tavoli già creati
+        Tavolo t1 = tavoli.get(0);
+        Tavolo t2 = tavoli.get(1);
+        Tavolo t3 = tavoli.get(2);
+
+        prenotazioni.add(new Prenotazione(
+                LocalDate.now(),
+                LocalTime.of(12, 0),
+                LocalTime.of(14, 0),
+                2, t1));
+
+        prenotazioni.add(new Prenotazione(
+                LocalDate.now(),
+                LocalTime.of(13, 0),
+                LocalTime.of(15, 0),
+                4, t2));
+
+        prenotazioni.add(new Prenotazione(
+                LocalDate.now().plusDays(1),
+                LocalTime.of(20, 0),
+                LocalTime.of(22, 0),
+                6, t3));
     }
 
 
@@ -97,14 +120,16 @@ public class Controller {
     }
 
     // METODI ORDINE
-    public void creaOrdine(LocalDateTime data_ora){
+    public Ordine creaOrdine(LocalDateTime data_ora){
         Ordine ordine = new Ordine (data_ora);
         ordini.add(ordine);
+        return ordine;
     }
 
     public void aggiungiRigaOrdine(Ordine o, int quantita, BigDecimal prezzo_unitario){
         RigaOrdine riga = new RigaOrdine(quantita, prezzo_unitario);
         o.aggiungiRiga(riga);
+        o.calcolaTotale();
     }
 
     public void chiudiOrdine(Ordine o){

@@ -60,6 +60,7 @@ public class Ordine {
         for(RigaOrdine r : righe_ordine){
              totale_calcolato = totale_calcolato.add(r.calcolaSubtotale());
         }
+        this.totale = totale_calcolato;
     }
 
     public void chiudi() {

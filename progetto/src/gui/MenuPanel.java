@@ -44,10 +44,10 @@ public class MenuPanel extends JPanel {
                     tipo,
                     isDisponibile
             });
-
-            JScrollPane scrollPane = new JScrollPane(table);
-            setLayout(new BorderLayout());
-            add(scrollPane, BorderLayout.CENTER);
         }
+
+        JScrollPane scrollPane = new JScrollPane(table);
+        setLayout(new BorderLayout());
+        add(scrollPane, BorderLayout.CENTER);
     }
 }
