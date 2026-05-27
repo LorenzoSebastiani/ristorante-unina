@@ -27,5 +27,6 @@ public class MainFrame extends JFrame {
         tabbedPane.addTab("Menù", new MenuPanel(controller));
         tabbedPane.addTab("Ordini", new OrdiniPanel(controller));
         tabbedPane.addTab("Prenotazioni", new PrenotazioniPanel(controller));
+        tabbedPane.addTab("Clienti", new ClientiPanel(controller));
     }
 }
