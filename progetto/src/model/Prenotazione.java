@@ -19,7 +19,7 @@ public class Prenotazione {
         this.ora_inizio = ora_inizio;
         this.ora_fine = ora_fine;
         this.numero_persone = numero_persone;
-        this.stato = StatoPrenotazione.COMPLETATA;
+        this.stato = StatoPrenotazione.CONFERMATA;
         this.tavolo = tavolo;
     }
 
@@ -53,8 +53,8 @@ public class Prenotazione {
         return tavolo;
     }
 
-    public void conferma(){
-        this.stato = StatoPrenotazione.CONFERMATA;
+    public void completa(){
+        this.stato = StatoPrenotazione.COMPLETATA;
     }
 
     public void annulla() {

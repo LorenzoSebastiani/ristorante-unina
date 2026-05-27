@@ -1,17 +1,21 @@
 package model;
 
+import enumeration.Ruolo;
+
 public class Cliente {
     private int id;
     private String nome;
     private String cognome;
     private String telefono;
     private String email;
+    private Ruolo ruolo;
 
-    public Cliente ( String nome, String cognome, String telefono, String email){
+    public Cliente ( String nome, String cognome, String telefono, String email, Ruolo ruolo){
         this.nome = nome;
         this.cognome = cognome;
         this.telefono = telefono;
         this.email = email;
+        this.ruolo = ruolo;
     }
 
     public Cliente () {}
@@ -34,6 +38,10 @@ public class Cliente {
 
     public String getEmail() {
         return email;
+    }
+
+    public Ruolo getRuolo(){
+        return ruolo;
     }
 
     public String toString() {

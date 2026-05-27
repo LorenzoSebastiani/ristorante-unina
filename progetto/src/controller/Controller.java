@@ -1,6 +1,6 @@
 package controller;
 
-import enumeration.StatoPrenotazione;
+import enumeration.Ruolo;
 import model.*;
 
 import java.math.BigDecimal;
@@ -37,8 +37,9 @@ public class Controller {
         piatti.add(new PiattoDelGiorno("Risotto ai funghi", "Risotto con porcini freschi", new BigDecimal("9.00"), "Primo", 5, LocalDate.now()));
         piatti.add(new PiattoDelGiorno("Branzino al forno", "Con verdure di stagione", new BigDecimal("12.00"), "Secondo", 3, LocalDate.now()));
 
-        clienti.add(new Cliente("Mario", "Rossi", "3331234567", "mario.rossi@email.it"));
-        clienti.add(new Cliente("Giulia", "Bianchi", "3479876543", "giulia.bianchi@email.it"));
+        clienti.add(new Cliente("Mario", "Rossi", "3331234567", "mario.rossi@email.it", Ruolo.CLIENTE));
+        clienti.add(new Cliente("Giulia", "Bianchi", "3479876543", "giulia.bianchi@email.it", Ruolo.OPERATORE));
+        clienti.add(new Cliente("Lorenzo", "Sebastiani", "33333333333", "lorenzo@gmail.it", Ruolo.ADMIN));
 
         // recupera i tavoli già creati
         Tavolo t1 = tavoli.get(0);
@@ -67,8 +68,8 @@ public class Controller {
 
 
     // METODI CLIENTE
-    public void aggiungiCliente(String nome, String cognome, String telefono, String email){
-        Cliente cliente = new Cliente(nome, cognome, telefono, email);
+    public void aggiungiCliente(String nome, String cognome, String telefono, String email, Ruolo ruolo){
+        Cliente cliente = new Cliente(nome, cognome, telefono, email, ruolo);
         clienti.add(cliente);
     }
 
@@ -88,6 +89,15 @@ public class Controller {
         return clienti;
     }
 
+    public List<Ruolo> getRuoli() {
+        List<Ruolo> ruoli = new ArrayList<>();
+        for(Ruolo r : Ruolo.values()){
+            ruoli.add(r);
+        }
+
+        return ruoli;
+    }
+
     // METODI TAVOLO
 
     public List<Tavolo> getTavoli() {
@@ -104,11 +114,13 @@ public class Controller {
     }
 
     // METODI PRENOTAZIONE
-    public void creaPrenotazione(LocalDate data, LocalTime ora_inizio, LocalTime ora_fine, int numero_persone, Tavolo tavolo) {
+    public Prenotazione creaPrenotazione(LocalDate data, LocalTime ora_inizio, LocalTime ora_fine, int numero_persone, Tavolo tavolo) {
         if(isTavoloDisponibile(tavolo, data, ora_inizio, ora_fine)){
             Prenotazione prenotazione = new Prenotazione(data, ora_inizio, ora_fine, numero_persone, tavolo);
             prenotazioni.add(prenotazione);
+            return prenotazione;
         }
+        return null;
     }
 
     public void cancellaPrenotazione(Prenotazione p){
@@ -142,12 +154,12 @@ public class Controller {
     }
 
     public List<Piatto> getPiattiDisponibili(){
-        List<Piatto> patti_disponibili= new ArrayList<>();
+        List<Piatto> piatti_disponibili= new ArrayList<>();
         for(Piatto p : piatti){
             if(p.isDisponibile()){
-                patti_disponibili.add(p);
+                piatti_disponibili.add(p);
             }
         }
-        return patti_disponibili;
+        return piatti_disponibili;
     }
 }

@@ -6,42 +6,156 @@ import model.Prenotazione;
 import model.Tavolo;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class PrenotazioniPanel extends JPanel {
+
     private Controller controller;
+
     private JTable prenotazioniTable;
     private DefaultTableModel model;
+
     private JComboBox<String> comboBox;
     private JTextField dataField;
     private JTextField oraInizioField;
     private JTextField oraFineField;
+
     private JSpinner n_persone;
+
     private JButton buttonPrenota;
     private JButton buttonCancella;
 
     public PrenotazioniPanel(Controller controller) {
+
         this.controller = controller;
-        this.comboBox = new JComboBox<>();
-        this.buttonPrenota = new JButton("Prenota");
-        this.buttonCancella = new JButton("Cancella");
-        this.dataField = new JTextField();
-        this.oraInizioField = new JTextField();
-        this.oraFineField = new JTextField();
-        this.n_persone = new JSpinner();
 
-        setLayout(new BorderLayout(10, 10));
-        comboBox.addItem(null);
-        controller.getTavoli().forEach(t -> comboBox.addItem(t.getNumero() + " - " + t.getCapienza() + " - " + t.getPosizione()));
+        initLookAndFeel();
 
-        String[] colonne = {"Data", "Ora inizio", "Ora fine", "Numero persone", "Stato", "Tavolo"};
+        setLayout(new BorderLayout(12, 12));
+        setBorder(new EmptyBorder(15, 15, 15, 15));
+        setBackground(new Color(245, 246, 250));
+
+        initComponents();
+        buildTable();
+        buildForm();
+        loadData();
+        initActions();
+    }
+
+    private void initLookAndFeel() {
+        try {
+            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+        } catch (Exception ignored) {}
+    }
+
+    private void initComponents() {
+
+        comboBox = new JComboBox<>();
+
+        dataField = new JTextField();
+        oraInizioField = new JTextField();
+        oraFineField = new JTextField();
+
+        n_persone = new JSpinner(new SpinnerNumberModel(1, 1, 20, 1));
+
+        buttonPrenota = new JButton("📅 Prenota");
+        buttonCancella = new JButton("❌ Cancella");
+
+        styleButton(buttonPrenota, new Color(46, 204, 113));
+        styleButton(buttonCancella, new Color(231, 76, 60));
+    }
+
+    private void styleButton(JButton button, Color color) {
+        button.setBackground(color);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setFont(new Font("SansSerif", Font.BOLD, 13));
+        button.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+    }
+
+    private void buildTable() {
+
+        String[] colonne = {
+                "Data", "Ora Inizio", "Ora Fine",
+                "Persone", "Stato", "Tavolo"
+        };
+
         model = new DefaultTableModel(colonne, 0);
         prenotazioniTable = new JTable(model);
 
-        for(Prenotazione p : controller.getPrenotazioni()){
+        prenotazioniTable.setRowHeight(26);
+        prenotazioniTable.setFont(new Font("SansSerif", Font.PLAIN, 13));
+        prenotazioniTable.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 13));
+        prenotazioniTable.getTableHeader().setBackground(new Color(52, 73, 94));
+        prenotazioniTable.getTableHeader().setForeground(Color.WHITE);
+        prenotazioniTable.setSelectionBackground(new Color(52, 152, 219));
+        prenotazioniTable.setSelectionForeground(Color.WHITE);
+        prenotazioniTable.setShowGrid(false);
+
+        add(new JScrollPane(prenotazioniTable), BorderLayout.CENTER);
+    }
+
+    private void buildForm() {
+
+        comboBox.addItem("Seleziona tavolo");
+
+        JPanel form = new JPanel(new GridBagLayout());
+        form.setBorder(BorderFactory.createTitledBorder("Nuova Prenotazione"));
+        form.setBackground(Color.WHITE);
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.insets = new Insets(5, 5, 5, 5);
+        c.fill = GridBagConstraints.HORIZONTAL;
+
+        int y = 0;
+
+        addRow(form, c, y++, "Tavolo:", comboBox);
+        addRow(form, c, y++, "Data (yyyy-MM-dd):", dataField);
+        addRow(form, c, y++, "Ora inizio (HH:mm):", oraInizioField);
+        addRow(form, c, y++, "Ora fine (HH:mm):", oraFineField);
+        addRow(form, c, y++, "Numero persone:", n_persone);
+
+        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttons.setBackground(Color.WHITE);
+        buttons.add(buttonPrenota);
+        buttons.add(buttonCancella);
+
+        c.gridx = 0;
+        c.gridy = y;
+        c.gridwidth = 2;
+        form.add(buttons, c);
+
+        add(form, BorderLayout.SOUTH);
+    }
+
+    private void addRow(JPanel panel, GridBagConstraints c, int y, String label, JComponent field) {
+
+        c.gridx = 0;
+        c.gridy = y;
+        c.weightx = 0;
+        panel.add(new JLabel(label), c);
+
+        c.gridx = 1;
+        c.weightx = 1;
+        panel.add(field, c);
+    }
+
+    private void loadData() {
+
+        controller.getTavoli().forEach(t ->
+                comboBox.addItem(
+                        t.getNumero() + " - cap: " +
+                                t.getCapienza() + " - " +
+                                t.getPosizione()
+                )
+        );
+
+        for (Prenotazione p : controller.getPrenotazioni()) {
             model.addRow(new Object[]{
                     p.getData(),
                     p.getOra_inizio(),
@@ -51,71 +165,64 @@ public class PrenotazioniPanel extends JPanel {
                     p.getTavolo().getNumero()
             });
         }
+    }
 
-        add(new JScrollPane(prenotazioniTable), BorderLayout.CENTER);
+    private void initActions() {
 
-        JPanel sudPanel = new JPanel(new GridLayout(6,2,5,5));
-        sudPanel.add(new JLabel("Tavolo:"));
-        sudPanel.add(comboBox);
-        sudPanel.add(new JLabel("Data (yyyy-MM-dd):"));
-        sudPanel.add(dataField);
-        sudPanel.add(new JLabel("Ora inizio (HH:mm):"));
-        sudPanel.add(oraInizioField);
-        sudPanel.add(new JLabel("Ora Fine (HH:mm):"));
-        sudPanel.add(oraFineField);
-        sudPanel.add(new JLabel("Numero persone"));
-        sudPanel.add(n_persone);
-        sudPanel.add(buttonPrenota);
-        sudPanel.add(buttonCancella);
-        add(sudPanel, BorderLayout.SOUTH);
+        buttonPrenota.addActionListener(e -> {
 
-        buttonPrenota.addActionListener(e->{
-            int index = comboBox.getSelectedIndex() - 1; // -1 perché hai il null come primo elemento
-            if(index < 0) {
-                System.err.println("Errore");
+            int index = comboBox.getSelectedIndex() - 1;
+
+            if (index < 0) {
+                JOptionPane.showMessageDialog(this, "Seleziona un tavolo!");
                 return;
             }
+
             Tavolo tavolo = controller.getTavoli().get(index);
-
-            if(tavolo == null){
-                System.err.println("Seleziona un tavolo!");
-                return;
-            }
 
             try {
                 LocalDate data = LocalDate.parse(dataField.getText());
-                LocalTime oraInizio = LocalTime.parse(oraInizioField.getText());
-                LocalTime oraFine = LocalTime.parse(oraFineField.getText());
-                int nPersone = (int) n_persone.getValue();
+                LocalTime inizio = LocalTime.parse(oraInizioField.getText());
+                LocalTime fine = LocalTime.parse(oraFineField.getText());
+                int persone = (int) n_persone.getValue();
 
-                controller.creaPrenotazione(data, oraInizio, oraFine, nPersone, tavolo);
+                Prenotazione p = controller.creaPrenotazione(
+                        data, inizio, fine, persone, tavolo
+                );
+
+                if(p == null){
+                    JOptionPane.showMessageDialog(this, "Tavolo non disponibile in questa fascia oraria.");
+                    return;
+                }
 
                 model.addRow(new Object[]{
                         data,
-                        oraInizio,
-                        oraFine,
-                        nPersone,
+                        inizio,
+                        fine,
+                        persone,
                         StatoPrenotazione.COMPLETATA,
                         tavolo.getNumero()
                 });
+
             } catch (Exception ex) {
-                System.err.println("Formato data/ora non valido!");
-                return;
+                JOptionPane.showMessageDialog(this,
+                        "Formato data/ora non valido!\nUsa yyyy-MM-dd e HH:mm");
             }
         });
 
-        buttonCancella.addActionListener(e->{
-            int riga_selected = (int) prenotazioniTable.getSelectedRow();
+        buttonCancella.addActionListener(e -> {
 
-            if(riga_selected == -1) {
-                System.err.println("Seleziona una prenotazione!");
+            int row = prenotazioniTable.getSelectedRow();
+
+            if (row == -1) {
+                JOptionPane.showMessageDialog(this, "Seleziona una prenotazione!");
                 return;
             }
 
-            Prenotazione prenotazione = controller.getPrenotazioni().get(riga_selected);
-            controller.cancellaPrenotazione(prenotazione);
+            Prenotazione p = controller.getPrenotazioni().get(row);
+            controller.cancellaPrenotazione(p);
 
-            model.setValueAt(StatoPrenotazione.CANCELLATA, riga_selected, 4);
+            model.setValueAt(StatoPrenotazione.CANCELLATA, row, 4);
         });
     }
 }
