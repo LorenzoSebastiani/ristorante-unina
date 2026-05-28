@@ -1,6 +1,7 @@
 package gui;
 
 import controller.Controller;
+import enumeration.Ruolo;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,10 +10,31 @@ public class MainFrame extends JFrame {
 
     private Controller controller;
     private JTabbedPane tabbedPane;
+    private Ruolo ruolo;
 
     public MainFrame() {
 
         this.controller = new Controller();
+        this.ruolo = Ruolo.ADMIN;
+
+        initLookAndFeel();
+
+        setTitle("🍽 Gestionale Ristorante");
+        setSize(1000, 650);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        setLayout(new BorderLayout());
+
+        add(createHeader(), BorderLayout.NORTH);
+        add(createTabs(), BorderLayout.CENTER);
+
+        setVisible(true);
+    }
+
+    public MainFrame(Controller controller, Ruolo ruolo){
+        this.controller = controller;
+        this.ruolo = ruolo;
 
         initLookAndFeel();
 
@@ -54,7 +76,21 @@ public class MainFrame extends JFrame {
         text.add(title);
         text.add(subtitle);
 
+        JButton button = new JButton("Esci");
+        button.setBackground(Color.RED);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setFont(new Font("SansSerif", Font.BOLD, 13));
+        button.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
         header.add(text, BorderLayout.WEST);
+        header.add(button, BorderLayout.EAST);
+
+        button.addActionListener(e -> {
+            new LoginFrame();
+            dispose();
+        });
 
         return header;
     }
@@ -66,11 +102,25 @@ public class MainFrame extends JFrame {
         tabbedPane.setFont(new Font("SansSerif", Font.BOLD, 13));
         tabbedPane.setBackground(new Color(236, 240, 241));
 
-        tabbedPane.addTab("🍽 Menù", new MenuPanel(controller));
-        tabbedPane.addTab("🧾 Ordini", new OrdiniPanel(controller));
-        tabbedPane.addTab("📅 Prenotazioni", new PrenotazioniPanel(controller));
-        tabbedPane.addTab("👤 Clienti", new ClientiPanel(controller));
-
+        switch (ruolo){
+            case ADMIN -> {
+                tabbedPane.addTab("🍽 Menù", new MenuPanel(controller));
+                tabbedPane.addTab("🧾 Ordini", new OrdiniPanel(controller));
+                tabbedPane.addTab("📅 Prenotazioni", new PrenotazioniPanel(controller));
+                tabbedPane.addTab("👤 Clienti", new ClientiPanel(controller));
+            }
+            case OPERATORE -> {
+                tabbedPane.addTab("🧾 Ordini", new OrdiniPanel(controller));
+                tabbedPane.addTab("📅 Prenotazioni", new PrenotazioniPanel(controller));
+            }
+            case CLIENTE -> {
+                tabbedPane.addTab("🍽 Menù", new MenuPanel(controller));
+                tabbedPane.addTab("📅 Prenotazioni", new PrenotazioniPanel(controller));
+            }
+            default -> {
+                return null;
+            }
+        }
         return tabbedPane;
     }
 }

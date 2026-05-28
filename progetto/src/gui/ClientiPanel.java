@@ -20,7 +20,8 @@ public class ClientiPanel extends JPanel {
     private JTextField cognomeField;
     private JTextField telefonoField;
     private JTextField emailField;
-    private JComboBox<Ruolo> ruoloBox;
+    private JPasswordField passwordField;
+    private JComboBox ruoloBox;
 
     private JButton aggiungiBtn;
     private JButton cercaButton;
@@ -54,7 +55,8 @@ public class ClientiPanel extends JPanel {
         cognomeField = new JTextField();
         telefonoField = new JTextField();
         emailField = new JTextField();
-        ruoloBox = new JComboBox<>(Ruolo.values());
+        passwordField = new JPasswordField();
+        ruoloBox = new JComboBox<>();
 
         aggiungiBtn = new JButton("➕ Aggiungi cliente");
         cercaButton = new JButton("🔎 Cerca email");
@@ -108,6 +110,7 @@ public class ClientiPanel extends JPanel {
         addRow(form, c, y++, "Cognome:", cognomeField);
         addRow(form, c, y++, "Telefono:", telefonoField);
         addRow(form, c, y++, "Email:", emailField);
+        addRow(form, c, y++, "Password", passwordField);
         addRow(form, c, y++, "Ruolo:", ruoloBox);
 
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -136,15 +139,19 @@ public class ClientiPanel extends JPanel {
     }
 
     private void loadData() {
+        ruoloBox.addItem("Seleziona ruolo");
 
-        controller.getRuoli().forEach(r -> ruoloBox.addItem(r));
+        for(Ruolo r : controller.getRuoli()){
+            ruoloBox.addItem(r);
+        }
 
         for (Cliente c : controller.getClienti()) {
             model.addRow(new Object[]{
                     c.getNome(),
                     c.getCognome(),
                     c.getTelefono(),
-                    c.getEmail()
+                    c.getEmail(),
+                    c.getRuolo()
             });
         }
     }
@@ -166,6 +173,7 @@ public class ClientiPanel extends JPanel {
             String cognome = cognomeField.getText().trim();
             String telefono = telefonoField.getText().trim();
             String email = emailField.getText().trim();
+            String password = new String(passwordField.getPassword());
 
             if (nome.isEmpty() || cognome.isEmpty() ||
                     telefono.isEmpty() || email.isEmpty()) {
@@ -175,7 +183,7 @@ public class ClientiPanel extends JPanel {
                 return;
             }
 
-            controller.aggiungiCliente(nome, cognome, telefono, email, ruolo);
+            controller.aggiungiCliente(nome, cognome, telefono, email, ruolo, password);
 
             model.addRow(new Object[]{
                     nome, cognome, telefono, email, ruolo
@@ -210,5 +218,6 @@ public class ClientiPanel extends JPanel {
         cognomeField.setText("");
         telefonoField.setText("");
         emailField.setText("");
+        passwordField.setText("");
     }
 }

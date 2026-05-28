@@ -18,11 +18,11 @@ public class Controller {
     private List<Piatto> piatti;
 
     public Controller() {
-        this.clienti = new ArrayList<Cliente>();
-        this.tavoli = new ArrayList<Tavolo>();
-        this.prenotazioni = new ArrayList<Prenotazione>();
-        this.ordini = new ArrayList<Ordine>();
-        this.piatti = new ArrayList<Piatto>();
+        this.clienti = new ArrayList<>();
+        this.tavoli = new ArrayList<>();
+        this.prenotazioni = new ArrayList<>();
+        this.ordini = new ArrayList<>();
+        this.piatti = new ArrayList<>();
 
         tavoli.add(new Tavolo(1, 2, "interno"));
         tavoli.add(new Tavolo(2, 4, "interno"));
@@ -37,9 +37,9 @@ public class Controller {
         piatti.add(new PiattoDelGiorno("Risotto ai funghi", "Risotto con porcini freschi", new BigDecimal("9.00"), "Primo", 5, LocalDate.now()));
         piatti.add(new PiattoDelGiorno("Branzino al forno", "Con verdure di stagione", new BigDecimal("12.00"), "Secondo", 3, LocalDate.now()));
 
-        clienti.add(new Cliente("Mario", "Rossi", "3331234567", "mario.rossi@email.it", Ruolo.CLIENTE));
-        clienti.add(new Cliente("Giulia", "Bianchi", "3479876543", "giulia.bianchi@email.it", Ruolo.OPERATORE));
-        clienti.add(new Cliente("Lorenzo", "Sebastiani", "33333333333", "lorenzo@gmail.it", Ruolo.ADMIN));
+        clienti.add(new Cliente("Mario", "Rossi", "3331234567", "mario.rossi@email.it", Ruolo.CLIENTE, "12345"));
+        clienti.add(new Cliente("Giulia", "Bianchi", "3479876543", "giulia.bianchi@email.it", Ruolo.OPERATORE, "12345"));
+        clienti.add(new Cliente("Lorenzo", "Sebastiani", "33333333333", "lorenzo@gmail.it", Ruolo.ADMIN, "12345"));
 
         // recupera i tavoli già creati
         Tavolo t1 = tavoli.get(0);
@@ -68,8 +68,8 @@ public class Controller {
 
 
     // METODI CLIENTE
-    public void aggiungiCliente(String nome, String cognome, String telefono, String email, Ruolo ruolo){
-        Cliente cliente = new Cliente(nome, cognome, telefono, email, ruolo);
+    public void aggiungiCliente(String nome, String cognome, String telefono, String email, Ruolo ruolo, String password){
+        Cliente cliente = new Cliente(nome, cognome, telefono, email, ruolo, password);
         clienti.add(cliente);
     }
 
@@ -96,6 +96,15 @@ public class Controller {
         }
 
         return ruoli;
+    }
+
+    public Cliente login (String email, String password){
+        for (Cliente c : clienti){
+            if(c.getEmail().equals(email) && c.getPassword().equals(password)){
+                return c;
+            }
+        }
+        return null;
     }
 
     // METODI TAVOLO
