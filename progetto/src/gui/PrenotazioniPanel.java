@@ -1,6 +1,7 @@
 package gui;
 
 import controller.Controller;
+import enumeration.Ruolo;
 import enumeration.StatoPrenotazione;
 import model.Prenotazione;
 import model.Tavolo;
@@ -97,7 +98,9 @@ public class PrenotazioniPanel extends JPanel {
         prenotazioniTable.setSelectionForeground(Color.WHITE);
         prenotazioniTable.setShowGrid(false);
 
-        add(new JScrollPane(prenotazioniTable), BorderLayout.CENTER);
+        if(controller.getActiveCliente().getRuolo() != Ruolo.CLIENTE){
+            add(new JScrollPane(prenotazioniTable), BorderLayout.CENTER);
+        }
     }
 
     private void buildForm() {
@@ -105,7 +108,6 @@ public class PrenotazioniPanel extends JPanel {
         comboBox.addItem("Seleziona tavolo");
 
         JPanel form = new JPanel(new GridBagLayout());
-        form.setBorder(BorderFactory.createTitledBorder("Nuova Prenotazione"));
         form.setBackground(Color.WHITE);
 
         GridBagConstraints c = new GridBagConstraints();
@@ -130,7 +132,11 @@ public class PrenotazioniPanel extends JPanel {
         c.gridwidth = 2;
         form.add(buttons, c);
 
-        add(form, BorderLayout.SOUTH);
+        if(controller.getActiveCliente().getRuolo() != Ruolo.CLIENTE){
+            add(form, BorderLayout.SOUTH);
+            return;
+        }
+        add(form, BorderLayout.CENTER);
     }
 
     private void addRow(JPanel panel, GridBagConstraints c, int y, String label, JComponent field) {

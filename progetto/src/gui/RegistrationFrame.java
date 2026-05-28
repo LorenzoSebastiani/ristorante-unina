@@ -1,6 +1,7 @@
 package gui;
 
 import controller.Controller;
+import enumeration.Ruolo;
 import model.Cliente;
 
 import javax.swing.*;
@@ -8,19 +9,23 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class LoginFrame extends JFrame {
+public class RegistrationFrame extends JFrame {
     private Controller controller;
     private JTextField emailField;
+    private JTextField nomeField;
+    private JTextField cognomeField;
+    private JTextField telefonoField;
     private JPasswordField passwordField;
-    private JButton loginButton;
+    private JComboBox ruoloBox;
+    private JButton registrationButton;
     private JLabel linkLabel;
 
-    public LoginFrame () {
+    public RegistrationFrame () {
         this.controller = new Controller();
 
         initLookAndFeel();
         setTitle("🍽 Gestionale Ristorante");
-        setSize(300, 300);
+        setSize(350, 420);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -29,6 +34,7 @@ public class LoginFrame extends JFrame {
 
         initComponents();
         createForm();
+        loadData();
         initActions();
 
 
@@ -46,7 +52,7 @@ public class LoginFrame extends JFrame {
         header.setBackground((new Color(44, 62, 80)));
         header.setBorder(BorderFactory.createEmptyBorder(10, 15, 10 ,15));
 
-        JLabel title = new JLabel("Login");
+        JLabel title = new JLabel("Registrati");
         title.setForeground(Color.WHITE);
         title.setFont(new Font("SansSerif", Font.BOLD, 18));
 
@@ -73,12 +79,16 @@ public class LoginFrame extends JFrame {
         c.fill = GridBagConstraints.HORIZONTAL;
 
         int y = 0;
+        addRow(form, c, y++, "Nome:", nomeField);
+        addRow(form, c, y++, "Cognome:", cognomeField);
+        addRow(form, c, y++, "Telefono:", telefonoField);
         addRow(form, c, y++, "Email:", emailField);
-        addRow(form, c, y++, "Password:", passwordField);
+        addRow(form, c, y++, "Password", passwordField);
+        addRow(form, c, y++, "Ruolo:", ruoloBox);
 
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.CENTER));
         buttons.setBackground(Color.WHITE);
-        buttons.add(loginButton);
+        buttons.add(registrationButton);
 
         JPanel link = new JPanel(new FlowLayout(FlowLayout.CENTER));
         link.setBackground(Color.WHITE);
@@ -96,15 +106,19 @@ public class LoginFrame extends JFrame {
     }
 
     private void initComponents() {
+        nomeField = new JTextField();
+        cognomeField = new JTextField();
+        telefonoField = new JTextField();
         emailField = new JTextField();
         passwordField = new JPasswordField();
+        ruoloBox = new JComboBox<>();
 
-        loginButton = new JButton("Login");
-        linkLabel = new JLabel("<html><u>Registrati ora...</u></html>");
+        registrationButton = new JButton("Registrati");
+        linkLabel = new JLabel("<html><u>Effettua il login ora...</u></html>");
         linkLabel.setForeground(Color.BLUE);
         linkLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        styleButton(loginButton, new Color(46, 204, 113));
+        styleButton(registrationButton, new Color(46, 204, 113));
     }
 
     private void styleButton(JButton button, Color color) {
@@ -129,36 +143,62 @@ public class LoginFrame extends JFrame {
     }
 
     private void initActions(){
-        loginButton.addActionListener(e-> {
-            String email = emailField.getText().trim();
-            String password = new String(passwordField.getPassword());
+        registrationButton.addActionListener(e-> {
+            int index = ruoloBox.getSelectedIndex() -1;
 
-            if(email.isEmpty() || password.isEmpty()){
-                JOptionPane.showMessageDialog(this, "Inserisci email e password!");
+            if(index <0){
+                JOptionPane.showMessageDialog(this, "Seleziona un ruolo");
                 return;
             }
 
-            Cliente c = controller.login(email, password);
-            if(c == null){
-                JOptionPane.showMessageDialog(this, "Cliente non trovato... Riprova!");
+            Ruolo ruolo = controller.getRuoli().get(index);
+            String nome = nomeField.getText().trim();
+            String cognome = cognomeField.getText().trim();
+            String telefono = telefonoField.getText().trim();
+            String email = emailField.getText().trim();
+            String password = new String(passwordField.getPassword());
+
+            if (nome.isEmpty() || cognome.isEmpty() ||
+                    telefono.isEmpty() || email.isEmpty()) {
+
+                JOptionPane.showMessageDialog(this,
+                        "Compila tutti i campi!");
+                return;
+            }
+
+            Cliente c = controller.aggiungiCliente(nome, cognome, telefono, email, ruolo, password);
+            if(c== null){
+                JOptionPane.showMessageDialog(this, "Email già registrata riprova!");
                 return;
             }
 
             clearFields();
             new MainFrame(controller, c.getRuolo());
             dispose();
+
         });
 
         linkLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e){
-                new RegistrationFrame();
+                new LoginFrame();
                 dispose();
             }
         });
     }
 
+    private void loadData() {
+        ruoloBox.addItem("Seleziona ruolo");
+
+        for(Ruolo r : controller.getRuoli()){
+            ruoloBox.addItem(r);
+        }
+    }
+
     private void clearFields() {
+        nomeField.setText("");
+        cognomeField.setText("");
+        telefonoField.setText("");
         emailField.setText("");
         passwordField.setText("");
     }

@@ -16,6 +16,7 @@ public class Controller {
     private List<Prenotazione> prenotazioni;
     private List<Ordine> ordini;
     private List<Piatto> piatti;
+    private Cliente activeCliente;
 
     public Controller() {
         this.clienti = new ArrayList<>();
@@ -23,6 +24,7 @@ public class Controller {
         this.prenotazioni = new ArrayList<>();
         this.ordini = new ArrayList<>();
         this.piatti = new ArrayList<>();
+        this.activeCliente = new Cliente();
 
         tavoli.add(new Tavolo(1, 2, "interno"));
         tavoli.add(new Tavolo(2, 4, "interno"));
@@ -68,9 +70,15 @@ public class Controller {
 
 
     // METODI CLIENTE
-    public void aggiungiCliente(String nome, String cognome, String telefono, String email, Ruolo ruolo, String password){
+    public Cliente aggiungiCliente(String nome, String cognome, String telefono, String email, Ruolo ruolo, String password){
+        for (Cliente c : getClienti()){
+            if(c.getEmail().equals(email)){
+                return null;
+            }
+        }
         Cliente cliente = new Cliente(nome, cognome, telefono, email, ruolo, password);
         clienti.add(cliente);
+        return cliente;
     }
 
     public Cliente findByEmail(String email) {
@@ -101,10 +109,15 @@ public class Controller {
     public Cliente login (String email, String password){
         for (Cliente c : clienti){
             if(c.getEmail().equals(email) && c.getPassword().equals(password)){
+                this.activeCliente = c;
                 return c;
             }
         }
         return null;
+    }
+
+    public Cliente getActiveCliente() {
+        return activeCliente;
     }
 
     // METODI TAVOLO

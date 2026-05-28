@@ -97,7 +97,6 @@ public class ClientiPanel extends JPanel {
 
 
         JPanel form = new JPanel(new GridBagLayout());
-        form.setBorder(BorderFactory.createTitledBorder("Gestione Clienti"));
         form.setBackground(Color.WHITE);
 
         GridBagConstraints c = new GridBagConstraints();
