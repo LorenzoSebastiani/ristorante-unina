@@ -17,7 +17,7 @@ public class LoginFrame extends JFrame {
 
         initLookAndFeel();
         setTitle("🍽 Gestionale Ristorante");
-        setSize(600, 750);
+        setSize(300, 350);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -62,7 +62,6 @@ public class LoginFrame extends JFrame {
 
     private void createForm(){
         JPanel form = new JPanel(new GridBagLayout());
-        form.setBorder(BorderFactory.createTitledBorder("Inserisci Email e Password"));
         form.setBackground(Color.WHITE);
 
         GridBagConstraints c = new GridBagConstraints();
@@ -73,7 +72,7 @@ public class LoginFrame extends JFrame {
         addRow(form, c, y++, "Email:", emailField);
         addRow(form, c, y++, "Password:", passwordField);
 
-        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.CENTER));
         buttons.setBackground(Color.WHITE);
         buttons.add(loginButton);
 
